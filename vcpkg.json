@@ -1,0 +1,12 @@
+{
+  "name": "savecountmanagerf4",
+  "version-string": "1.0.0",
+  "homepage": "https://github.com/WirelessLan/F4SEPlugins",
+  "license": "MIT",
+  "dependencies": [
+    "boost-stl-interfaces",
+    "fmt",
+    "mmio",
+    "spdlog"
+  ]
+}
