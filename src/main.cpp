@@ -20,7 +20,7 @@ void ReadINI() {
 	}
 
 	std::string bPreserveFirstSave_value = GetINIOption("Settings", "bPreserveFirstSave");
-	if (!bPreserveFirstSave_value.empty() && std::stoul(bPreserveFirstSave_value)) {
+	if (!bPreserveFirstSave_value.empty()) {
 		bPreserveFirstSave = std::stoul(bPreserveFirstSave_value);
 		logger::info(FMT_STRING("bPreserveFirstSave: {}"), bPreserveFirstSave);
 	}
