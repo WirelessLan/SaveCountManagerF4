@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
 
-# ---- Options ----
-
-option(COPY_BUILD "Copy the build output to the Fallout 4 directory." OFF)
-
 # ---- Cache build vars ----
 
 macro(set_from_environment VARIABLE)
@@ -12,7 +8,6 @@ macro(set_from_environment VARIABLE)
 	endif ()
 endmacro()
 
-set_from_environment(Fallout4Path)
 set_from_environment(VCPKG_ROOT)
 
 if (DEFINED VCPKG_ROOT)
@@ -163,48 +158,3 @@ if (MSVC)
 			"$<$<CONFIG:RELEASE>:/INCREMENTAL:NO;/OPT:REF;/OPT:ICF;/DEBUG:FULL>"
 	)
 endif ()
-
-# ---- File copying ----
-
-if (COPY_BUILD)
-	if (DEFINED Fallout4Path)
-		add_custom_command(
-			TARGET ${PROJECT_NAME}
-			POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> ${Fallout4Path}/Data/F4SE/Plugins/
-			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PDB_FILE:${PROJECT_NAME}> ${Fallout4Path}/Data/F4SE/Plugins/
-		)
-	else ()
-		message(
-			WARNING
-			"Variable Fallout4Path is not defined. Skipping post-build copy command."
-		)
-	endif ()
-endif ()
-
-# ---- Build artifacts ----
-
-set(SCRIPT "scripts/archive_artifacts.py")
-
-add_custom_target(
-	create_artifact
-	COMMAND
-		"${CMAKE_CURRENT_SOURCE_DIR}/${SCRIPT}"
-		"--name=\"${PROJECT_NAME}\""
-		"--dll=\"$<TARGET_FILE:${PROJECT_NAME}>\""
-		"--pdb=\"$<TARGET_PDB_FILE:${PROJECT_NAME}>\""
-	WORKING_DIRECTORY
-		${CMAKE_CURRENT_BINARY_DIR}
-	SOURCES
-		${SCRIPT}
-)
-
-add_dependencies(
-	create_artifact
-	${PROJECT_NAME}
-)
-
-source_group(
-	TREE ${CMAKE_CURRENT_SOURCE_DIR}
-	FILES ${SCRIPT}
-)
