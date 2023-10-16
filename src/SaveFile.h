@@ -25,7 +25,7 @@ namespace SCM {
 		SAVE_TYPE type;
 		std::uint32_t number;
 		std::string id;
-		std::uint8_t unk1;
+		char moddedOrSurvival;
 		std::string playerName;
 		std::string location;
 		std::string	unk2;
@@ -39,7 +39,7 @@ namespace SCM {
 			getSaveType();
 			getSaveNumber();
 			getSaveId();
-			getUnk1();
+			getModdedOrSurvival();
 			getPlayerName();
 			getLocation();
 			getUnk2();
@@ -102,8 +102,8 @@ namespace SCM {
 			this->id = std::string(saveId);
 		}
 
-		void getUnk1() {
-			this->unk1 = getNextChar();
+		void getModdedOrSurvival() {
+			this->moddedOrSurvival = getNextChar();
 		}
 
 		void getPlayerName() {

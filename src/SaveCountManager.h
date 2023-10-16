@@ -12,8 +12,8 @@ namespace SCM {
 			logger::info(FMT_STRING("New save file name: {}"), saveName.c_str());
 
 			this->sf = SaveFile(saveName);
-			logger::info(FMT_STRING("type[{}] number[{}] id[{}] unk1[{}] playerName[{}] location[{}] unk2[{}] time[{}] unk3[{}] unk4[{}]"),
-				this->sf.type, this->sf.number, this->sf.id.c_str(), this->sf.unk1, this->sf.playerName.c_str(),
+			logger::info(FMT_STRING("type[{}] number[{}] id[{}] moddedOrSurvival[{}] playerName[{}] location[{}] unk2[{}] time[{}] unk3[{}] unk4[{}]"),
+				this->sf.type, this->sf.number, this->sf.id.c_str(), this->sf.moddedOrSurvival, this->sf.playerName.c_str(),
 				this->sf.location.c_str(), this->sf.unk2.c_str(), this->sf.time.c_str(), this->sf.unk3, this->sf.unk4);
 		}
 
@@ -36,9 +36,13 @@ namespace SCM {
 				}
 
 				for (auto p_iter : iter.second) {
-					if (!remove(p_iter)) {
-						logger::critical(FMT_STRING("Failed to remove file: {}"), p_iter.string());
-						continue;
+					try {
+						bool remove_result = remove(p_iter);
+						if (!remove_result)
+							logger::critical("Failed to remove file: {}", p_iter.string());
+					}
+					catch (...) {
+						logger::critical("Exception caught while remove file: {}", p_iter.string());
 					}
 				}
 
@@ -85,7 +89,7 @@ namespace SCM {
 			if (saveDir.empty())
 				return retMap;
 
-			const std::regex filter("Save.*_" + this->sf.id + ".*");
+			const std::regex filter("Save.*_" + this->sf.id + this->sf.moddedOrSurvival + ".*");
 			const std::filesystem::directory_iterator dir_iter(saveDir);
 			for (auto iter : dir_iter) {
 				if (!std::filesystem::is_regular_file(iter.status()))
